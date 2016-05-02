@@ -268,9 +268,9 @@ public class NonGUIMain {
 	
 	public static void removeShip(){
 		System.out.println("Enter ship ID");
-		String name = sc.nextLine();
-		System.out.println("Enter ship name");
 		String ID = sc.nextLine();
+		System.out.println("Enter ship name");
+		String name = sc.nextLine();
 		dbm.removeShip(ID, name);
 		System.out.println("Ship removed!");
 	}

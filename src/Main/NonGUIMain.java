@@ -229,7 +229,8 @@ public class NonGUIMain {
 	public static void getOkTrucks(){
 		System.out.println("Enter ship volume");
 		String shipVolume = sc.nextLine(); 
-		System.out.println(dbm.getOKTrucks(shipVolume));
+		for(String s : dbm.getOKTrucks(shipVolume))
+			System.out.println(s);
 	}
 	
 	public static void addTrucks(){

@@ -342,11 +342,11 @@ public class DBMethods extends Database {
 			}
 		}
 	}
-	public void removeShip(String ID, String name, String comp){
+	public void removeShip(String ID, String name){
 		if(hasConnection()){
 			Statement stm = null;
 			try{
-				String sql = "DELETE FROM Ships WHERE ID='"+ ID +"' AND Name='"+ name +"' AND Company='"+ comp +"';";
+				String sql = "DELETE FROM Ships WHERE ID='"+ ID +"' AND Name='"+ name +"';";
 				stm = con.createStatement();
 				stm.executeUpdate(sql);
 			}catch(SQLException sqle){

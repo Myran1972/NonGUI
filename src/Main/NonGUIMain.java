@@ -157,9 +157,15 @@ public class NonGUIMain {
 		String sName = sc.nextLine();
 		System.out.println("ShipID");
 		int SID = sc.nextInt();
+		int dockId;
 		sc.nextLine();
 		try{
-			int dockId = dbm.getDockByVolumeType(dbm.getShipVol1(sName, SID));
+			dockId = dbm.getDockByVolumeType(dbm.getShipVol1(sName, SID));
+		}catch(NullPointerException e){
+			System.out.println("The ship doesn't exist in the database. Please add ship or try again!");
+			return;
+		}
+		try{
 			System.out.println("Date YYYY-MM-DD");
 			String date = sc.nextLine();
 			System.out.println("Time hh-hh");
@@ -177,8 +183,8 @@ public class NonGUIMain {
 				dbm.bookDock(dockId, date, time, sName, SID);
 				System.out.println("The ship is booked!");
 			}
-		}catch(NullPointerException e){
-			System.out.println("The ship doesn't exist in the database. Please add ship or try again!");
+		}catch(Exception e){
+			System.out.println("The date or time was incorrect. Please add ship or try again!");
 		}
 	}
 	

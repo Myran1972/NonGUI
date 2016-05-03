@@ -199,10 +199,12 @@ public class DBMethods extends Database {
 					sql = "INSERT INTO Ship_Booked" + " (Date, DockID_08, ShipName, ShipID)" + 
 							"VALUES ('"+ date +"', '"+ dockId +"', '" + sName + "', "+ SID +");";
 				}
-				else{
+				else if(time.equals("16-00")){ //satt tid då vad som helst godkändes /mr
 					sql = "INSERT INTO Ship_Booked" + " (Date, DockID_16, ShipName, ShipID)" + 
 							"VALUES ('"+ date +"', '"+ dockId +"', '" + sName + "', "+ SID +");";
 				}
+				else
+					return;
 				
 				stm = con.createStatement();
 				stm.executeUpdate(sql); //ï¿½ndrad inget resultset eller Query vid INSERT /mr

@@ -66,7 +66,7 @@ public class NonGUIMain {
 					sc.nextLine();
 					switch(subChoice){
 					
-					case 1: //search finns bara för ok truckar och du kan bara få en - gör om som getReport
+					case 1: //search för ok truckar 
 						getOkTrucks();
 						break;
 						
@@ -142,6 +142,7 @@ public class NonGUIMain {
 		System.out.println("4. Trucks");
 		System.out.println("5. Ships");
 		System.out.println("6. Quit");
+		System.out.println("Please, enter your choice!");
 	}
 	
 	public static void subMenu(String option){
@@ -153,20 +154,20 @@ public class NonGUIMain {
 	}
 
 	public static void bookShip(){ 
-		System.out.println("ShipName");
+		System.out.println("Enter the ship name");
 		String sName = sc.nextLine();
 		try{
 			checkNotNull(sName);
 		}catch(NullPointerException e){
-			System.out.println("No name, please try again!");
+			System.out.println("No name was entered, please try again!");
 			return;
 		}
-		System.out.println("ShipID");
+		System.out.println("Enter the ship's ID");
 		String s = sc.nextLine();
 		try{
 			checkNotNull(s);
 		}catch(NullPointerException e){
-			System.out.println("No shipID, please try again!");
+			System.out.println("No ship ID was entered, please try again!");
 			return;
 		}
 		int SID = Integer.parseInt(s);
@@ -177,27 +178,27 @@ public class NonGUIMain {
 			System.out.println("The ship doesn't exist in the database. Please add ship or try again!");
 			return;
 		}
-			System.out.println("Date YYYY-MM-DD");
+			System.out.println("Enter the date you wish to book (YYYY-MM-DD)");
 			String date = sc.nextLine();
 			try{
 				checkNotNull(date);
 			}catch(NullPointerException e){
-				System.out.println("No date, please try again!");
+				System.out.println("No date was entered, please try again!");
 				return;
 			}
-			System.out.println("Time hh-hh");
+			System.out.println("Enter the time interval you wish to book (00-08, 08-16 or 16-00)");
 			String time = sc.nextLine();
 			try{
 				checkNotNull(time);
 			}catch(NullPointerException e){
-				System.out.println("No time, please try again!");
+				System.out.println("No time was entered, please try again!");
 				return;
 			}
 			List<String> booked = dbm.getReport(date, date);
 			boolean available = true;
 			for(int i = 0; i<booked.size(); i++){
-				if(booked.get(i).contains(time) & booked.get(i).contains(Integer.toString(dockId))){
-					System.out.println("Already booked that time and date, please try again!");
+				if(booked.get(i).contains(time) & booked.get(i).contains("Dock: " + Integer.toString(dockId))){
+					System.out.println("Sorry, already booked that time and date, please try again!");
 					available = false;
 					break;
 				}						
@@ -214,9 +215,9 @@ public class NonGUIMain {
 	}
 	
 	public static void getReport(){
-		System.out.println("First Date YYYY-MM-DD");
+		System.out.println("Enter the start date for the report (YYYY-MM-DD)");
 		String firstDate = sc.nextLine();
-		System.out.println("Second Date YYYY-MM-DD (Leave it empty to get First Date)");
+		System.out.println("Enter the end date (YYYY-MM-DD) or leave it empty to get start date)");
 		String secondDate = sc.nextLine();
 		if(secondDate.equals("")){
 			secondDate = firstDate;

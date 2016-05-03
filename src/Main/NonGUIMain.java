@@ -151,6 +151,7 @@ public class NonGUIMain {
 		System.out.println("2. Add");
 		System.out.println("3. Remove");
 		System.out.println("4. Go to main menu");
+		System.out.println("Please, enter your choice!");
 	}
 
 	public static void bookShip(){ 
@@ -227,40 +228,116 @@ public class NonGUIMain {
 	}
 	
 	public static void searchStaff(){
-		System.out.println("Enter ID");
+		System.out.println("Enter staff ID");
 		String ID = sc.nextLine(); 
+		try{
+			checkNotNull(ID);
+		}catch(NullPointerException e){
+			System.out.println("No ID was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter lastname");
 		String lastName = sc.nextLine();
-		System.out.println(dbm.getPeps(ID, lastName));
+		try{
+			checkNotNull(lastName);
+		}catch(NullPointerException e){
+			System.out.println("No name was entered, please try again!");
+			return;
+		}
+		String staff = dbm.getPeps(ID, lastName);
+		if(staff != null){
+			System.out.println(staff);
+		}
+		else{
+			System.out.println("Sorry, no match! Please, add person or try again!");
+		}
 	}
 	
 	public static void addStaff(){
 		System.out.println("Enter first name");
 		String name = sc.nextLine();
+		try{
+			checkNotNull(name);
+		}catch(NullPointerException e){
+			System.out.println("No name was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter last name");
 		String familyName = sc.nextLine();
+		try{
+			checkNotNull(familyName);
+		}catch(NullPointerException e){
+			System.out.println("No last name was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter license type");
 		String license = sc.nextLine();
+		try{
+			checkNotNull(license);
+		}catch(NullPointerException e){
+			System.out.println("No license was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter schedule (MF/LS/S)");
 		String schedule = sc.nextLine();
+		try{
+			checkNotNull(schedule);
+		}catch(NullPointerException e){
+			System.out.println("No schedule was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter status");
 		String status = sc.nextLine();
-		dbm.addPeps(name, familyName, license, schedule, status); 
+		try{
+			checkNotNull(status);
+		}catch(NullPointerException e){
+			System.out.println("No status was entered, please try again!");
+			return;
+		}
+		try{
+			dbm.addPeps(name, familyName, license, schedule, status); 
+		}catch(Exception e){
+			System.out.println("Oops, you've entered something incorrect... Please, try again!");
+			return;
+		}
 		System.out.println("Staff added!");
 	}
 	
 	public static void removeStaff(){
 		System.out.println("Enter ID");
 		String PID = sc.nextLine();
+		try{
+			checkNotNull(PID);
+		}catch(NullPointerException e){
+			System.out.println("No ID was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter lastname");
 		String lastname = sc.nextLine();
-		dbm.removePeps(PID, lastname);
+		try{
+			checkNotNull(lastname);
+		}catch(NullPointerException e){
+			System.out.println("No last name was entered, please try again!");
+			return;
+		}
+		try{
+			dbm.removePeps(PID, lastname);
+		}catch(Exception e){
+			System.out.println("Person not found, couldn't remove, please try again!");
+			return;
+		}
 		System.out.println("Staff removed!");
 	}
 	
 	public static void getOkTrucks(){
 		System.out.println("Enter ship volume");
 		String shipVolume = sc.nextLine(); 
+		try{
+			checkNotNull(shipVolume);
+		}catch(NullPointerException e){
+			System.out.println("No ship volume was entered, please try again!");
+			return;
+		}
 		for(String s : dbm.getOKTrucks(shipVolume))
 			System.out.println(s);
 	}
@@ -268,17 +345,46 @@ public class NonGUIMain {
 	public static void addTrucks(){
 		System.out.println("Enter truck type");
 		String type = sc.nextLine();
+		try{
+			checkNotNull(type);
+		}catch(NullPointerException e){
+			System.out.println("No truck type was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter status");
 		String status = sc.nextLine();
-		dbm.addTrucks(type, status);
+		try{
+			checkNotNull(status);
+		}catch(NullPointerException e){
+			System.out.println("No status was entered, please try again!");
+			return;
+		}
+		try{
+			dbm.addTrucks(type, status);
+		}catch(Exception e){
+			System.out.println("Oops, you've entered something incorrect... Please, try again!");
+			return;
+		}
 		System.out.println("Truck added!");
 	}
 	
 	public static void removeTrucks(){
 		System.out.println("Enter ID");
 		String ID = sc.nextLine();
+		try{
+			checkNotNull(ID);
+		}catch(NullPointerException e){
+			System.out.println("No ID was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter type");
 		String truckType = sc.nextLine();
+		try{
+			checkNotNull(truckType);
+		}catch(NullPointerException e){
+			System.out.println("No truck type was entered, please try again!");
+			return;
+		}
 		dbm.removeTrucks(ID, truckType);
 		System.out.println("Truck removed!");
 	}
@@ -290,19 +396,54 @@ public class NonGUIMain {
 	public static void addShip(){
 		System.out.println("Enter ship name");
 		String name = sc.nextLine();
+		try{
+			checkNotNull(name);
+		}catch(NullPointerException e){
+			System.out.println("No name was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter company name");
 		String company = sc.nextLine();
+		try{
+			checkNotNull(company);
+		}catch(NullPointerException e){
+			System.out.println("No company name was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter volume type");
 		String volType = sc.nextLine();
-		dbm.addShip(name, company, volType);
+		try{
+			checkNotNull(volType);
+		}catch(NullPointerException e){
+			System.out.println("No volume type was entered, please try again!");
+			return;
+		}
+		try{
+			dbm.addShip(name, company, volType);
+		}catch(Exception e){
+			System.out.println("Oops, you've entered something incorrect... Please, try again!");
+			return;
+		}
 		System.out.println("Ship added!");
 	}
 	
 	public static void removeShip(){
 		System.out.println("Enter ship ID");
 		String ID = sc.nextLine();
+		try{
+			checkNotNull(ID);
+		}catch(NullPointerException e){
+			System.out.println("No ID was entered, please try again!");
+			return;
+		}
 		System.out.println("Enter ship name");
 		String name = sc.nextLine();
+		try{
+			checkNotNull(name);
+		}catch(NullPointerException e){
+			System.out.println("No ship name was entered, please try again!");
+			return;
+		}
 		dbm.removeShip(ID, name);
 		System.out.println("Ship removed!");
 	}

@@ -155,21 +155,44 @@ public class NonGUIMain {
 	public static void bookShip(){ 
 		System.out.println("ShipName");
 		String sName = sc.nextLine();
+		try{
+			checkNotNull(sName);
+		}catch(NullPointerException e){
+			System.out.println("No name, please try again!");
+			return;
+		}
 		System.out.println("ShipID");
-		int SID = sc.nextInt();
+		String s = sc.nextLine();
+		try{
+			checkNotNull(s);
+		}catch(NullPointerException e){
+			System.out.println("No shipID, please try again!");
+			return;
+		}
+		int SID = Integer.parseInt(s);
 		int dockId;
-		sc.nextLine();
 		try{
 			dockId = dbm.getDockByVolumeType(dbm.getShipVol1(sName, SID));
 		}catch(NullPointerException e){
 			System.out.println("The ship doesn't exist in the database. Please add ship or try again!");
 			return;
 		}
-		try{
 			System.out.println("Date YYYY-MM-DD");
 			String date = sc.nextLine();
+			try{
+				checkNotNull(date);
+			}catch(NullPointerException e){
+				System.out.println("No date, please try again!");
+				return;
+			}
 			System.out.println("Time hh-hh");
 			String time = sc.nextLine();
+			try{
+				checkNotNull(time);
+			}catch(NullPointerException e){
+				System.out.println("No time, please try again!");
+				return;
+			}
 			List<String> booked = dbm.getReport(date, date);
 			boolean available = true;
 			for(int i = 0; i<booked.size(); i++){
@@ -180,12 +203,14 @@ public class NonGUIMain {
 				}						
 			}
 			if(available){
-				dbm.bookDock(dockId, date, time, sName, SID);
-				System.out.println("The ship is booked!");
+				try{
+					dbm.bookDock(dockId, date, time, sName, SID);
+				}catch(Exception e){
+					System.out.println("Error: The date or time was incorrect. Please try again!");
+					return;
+				}
+				System.out.println("The ship " + sName + " is booked!");
 			}
-		}catch(Exception e){
-			System.out.println("The date or time was incorrect. Please add ship or try again!");
-		}
 	}
 	
 	public static void getReport(){
@@ -279,6 +304,12 @@ public class NonGUIMain {
 		String name = sc.nextLine();
 		dbm.removeShip(ID, name);
 		System.out.println("Ship removed!");
+	}
+	
+	public static void checkNotNull(String s){
+		if(s.equals("")){
+			throw new NullPointerException();
+		}
 	}
 }
 

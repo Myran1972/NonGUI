@@ -80,8 +80,8 @@ public class Database {
             System.err.println("Exception fetching "  + e.getMessage());
         }finally{
             closeBoth(rs, stm);
-            return result;
         }
+        return result;
     }    
     
     private void closeBoth(AutoCloseable a1, AutoCloseable a2){

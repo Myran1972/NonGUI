@@ -21,14 +21,6 @@ public class DBMethods extends Database {
 				stm = con.createStatement();
 				   rs = stm.executeQuery(sql);
 				   while(rs.next()){
-					   /*
-					   String id = rs.getString("DockID");
-					   //mr: String name = rs.getString("Name");
-					   String volumetype = rs.getString("VolumeType");
-					   //return "ID = " + id + ", Name = "+ name + ", VolumeType = "+ volumetype;
-					   String name = "Kaj "+id;
-					   return name;
-					   */
 					   return rs.getInt("DockID");
 				   }
 			   }catch(SQLException sqle){
@@ -105,36 +97,6 @@ public class DBMethods extends Database {
 		}
 		return null;
 	}
-	
-	//g�r om nedan helt, nytt namn mm, se nedanf�r /mr
-//	public String getDock(String dock_0, String firstDate, String secondDate){ 
-//		if(hasConnection()){
-//			Statement stm = null;
-//			ResultSet rs = null;
-//			try{
-//				String sql = "SELECT * FROM " + dock_0 + " WHERE Date BETWEEN '" + firstDate + "' AND '" + secondDate + "';";
-//
-//				stm = con.createStatement();
-//				rs = stm.executeQuery(sql);
-//				while(rs.next()){
-//					String date = rs.getString("Date");
-//					String time = rs.getString("TimeInterval");
-//					String ship = rs.getString("ShipName");
-//					return "Date: " + date + " Time: " + time + " ShipName: " + ship;
-//				}
-//			}catch(SQLException sqle){
-//				System.err.println(sqle.getMessage());
-//			}finally{
-//				try{
-//					rs.close();
-//					stm.close();
-//				}catch(SQLException e){
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		return null;
-//}
 
 	public List<String> getReport(String firstDate, String secondDate){ //ny pga uppdatering /mr
 
@@ -159,9 +121,7 @@ public class DBMethods extends Database {
 							dock = rs.getInt("DockID_16");
 							time = "16-00";
 						}
-
-					}//gjorde som Kim hade gjort f�rst (med return), men d� kan man bara f� f�rsta posten, kan man returnera n�got b�ttre?
-					//System.out.println("Date: " + date + " Time: " + time + " Dock: " + dock + " ShipID: " + shipId + " ShipName: " + ship);
+					}
 					String test = "Date: " + date + " Time: " + time + " Dock: " + dock + " ShipID: " + shipId + " ShipName: " + ship;
 					array.add(test);
 				}
@@ -183,7 +143,7 @@ public class DBMethods extends Database {
 	}
 	
 	//mr: public void bookDock(String dock_0, String date, String time, String sName, int SID, int PID, String lastName, int PP, String TID, int TP){
-	public void bookDock(int dockId, String date, String time, String sName, int SID){ //uppdaterad mr
+	public void bookDock(int dockId, String date, String time, String sName, int SID) throws Exception{ //uppdaterad mr
 		if(hasConnection()){
 			Statement stm = null;
 			//mr: ResultSet rs = null;
@@ -203,14 +163,15 @@ public class DBMethods extends Database {
 					sql = "INSERT INTO Ship_Booked" + " (Date, DockID_16, ShipName, ShipID)" + 
 							"VALUES ('"+ date +"', '"+ dockId +"', '" + sName + "', "+ SID +");";
 				}
-				else
-					return;
-				
+				else{
+					throw new Exception();
+				}
 				stm = con.createStatement();
 				stm.executeUpdate(sql); //�ndrad inget resultset eller Query vid INSERT /mr
 				
 			}catch(SQLException sqle){
 				System.err.println(sqle.getMessage());
+				throw new Exception();
 			}finally{
 				try{
 					stm.close();

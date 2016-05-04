@@ -228,14 +228,14 @@ public class NonGUIMain {
 	}
 	
 	public static void searchStaff(){
-		System.out.println("Enter staff ID");
-		String ID = sc.nextLine(); 
-		try{
-			checkNotNull(ID);
-		}catch(NullPointerException e){
-			System.out.println("No ID was entered, please try again!");
-			return;
-		}
+//		System.out.println("Enter staff ID");
+//		String ID = sc.nextLine(); 
+//		try{
+//			checkNotNull(ID);
+//		}catch(NullPointerException e){
+//			System.out.println("No ID was entered, please try again!");
+//			return;
+//		}
 		System.out.println("Enter lastname");
 		String lastName = sc.nextLine();
 		try{
@@ -244,13 +244,13 @@ public class NonGUIMain {
 			System.out.println("No name was entered, please try again!");
 			return;
 		}
-		String staff = dbm.getPeps(ID, lastName);
-		if(staff != null){
-			System.out.println(staff);
-		}
-		else{
-			System.out.println("Sorry, no match! Please, add person or try again!");
-		}
+		
+		for(String s : dbm.getPeps(lastName))
+			System.out.println(s);
+//		}
+//		else{
+//			System.out.println("Sorry, no match! Please, add person or try again!");
+//		}
 	}
 	
 	public static void addStaff(){

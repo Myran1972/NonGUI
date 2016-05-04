@@ -237,15 +237,16 @@ public class DBMethods extends Database {
 		}
 	}
 	
-	public String getPeps(String ID, String LastName){
+public List<String> getPeps(String LastName){
 		
 		if(hasConnection()){
 			Statement stm = null;
 			ResultSet rs = null;
 			try{
-				String sql = "SELECT * FROM Staff WHERE ID='"+ ID +"' AND Lastname='"+ LastName + "';";
+				String sql = "SELECT * FROM Staff WHERE Lastname='"+ LastName + "';";
 				stm = con.createStatement();
 				rs = stm.executeQuery(sql);
+				List<String> array = new ArrayList<String>();
 				while(rs.next()){
 					String PID = rs.getString("ID");
 					String Name = rs.getString("Name");
@@ -253,8 +254,11 @@ public class DBMethods extends Database {
 					String License = rs.getString("License");
 					String Schedule = rs.getString("Schedule");
 					String Status = rs.getString("Status");
-					return "ID: " + PID + " Name: " + Name + " LastName: " + LName + " License: " + License + " Schedule: " + Schedule + " Status: " + Status; 
+					
+					String line = "ID: " + PID + " Name: " + Name + " LastName: " + LName + " License: " + License + " Schedule: " + Schedule + " Status: " + Status;	
+					array.add(line);
 				}
+				return array;
 			}catch(SQLException sqle){
 				System.err.println(sqle.getMessage());
 			}finally{
@@ -306,6 +310,35 @@ public class DBMethods extends Database {
 			}
 		}
 	}
+public String getShip(String Name, String Company){
+		
+		if(hasConnection()){
+			Statement stm = null;
+			ResultSet rs = null;
+			try{
+				String sql = "SELECT * FROM Ships WHERE Name='"+ Name +"' AND Company='"+ Company + "';";
+				stm = con.createStatement();
+				rs = stm.executeQuery(sql);
+				while(rs.next()){
+					String PID = rs.getString("ID");
+					String SName = rs.getString("Name");
+					String SCompany = rs.getString("Company");
+					return "ID: " + PID + " Name: " + SName + " Company: " + SCompany; 
+				}
+			}catch(SQLException sqle){
+				System.err.println(sqle.getMessage());
+			}finally{
+				try{
+					rs.close();
+					stm.close();
+				}catch(SQLException e){
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
 	public void removeShip(String ID, String name){
 		if(hasConnection()){
 			Statement stm = null;

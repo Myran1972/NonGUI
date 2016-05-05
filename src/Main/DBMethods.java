@@ -199,7 +199,7 @@ public class DBMethods extends Database {
 			stm = con.createStatement();
 			rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
-				System.err.println(sqle.getMessage());
+				//System.err.println(sqle.getMessage()); kan förvirra användare
 				throw new ForeignKeyException();
 			}finally{
 				try{
@@ -276,7 +276,7 @@ public class DBMethods extends Database {
 			stm = con.createStatement();
 			rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
-				System.err.println(sqle.getMessage());
+				//System.err.println(sqle.getMessage()); kan förvirra användare
 				throw new ForeignKeyException();
 			}finally{
 				try{
@@ -371,7 +371,7 @@ public class DBMethods extends Database {
 				stm = con.createStatement();
 				rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
-				System.err.print(sqle.getMessage());
+				//System.err.println(sqle.getMessage()); kan förvirra användare
 				throw new ForeignKeyException();
 			}finally{
 				try{

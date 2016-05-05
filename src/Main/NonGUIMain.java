@@ -146,12 +146,22 @@ public class NonGUIMain {
 	}
 	
 	public static void subMenu(String option){
-		System.out.println(option);
-		System.out.println("1. Search ");
-		System.out.println("2. Add");
-		System.out.println("3. Remove");
-		System.out.println("4. Go to main menu");
-		System.out.println("Please, enter your choice!");
+		if(option.equals("Trucks")){
+			System.out.println(option);
+			System.out.println("1. Search trucks with OK status ");
+			System.out.println("2. Add");
+			System.out.println("3. Remove");
+			System.out.println("4. Go to main menu");
+			System.out.println("Please, enter your choice!");
+		}
+		else{
+			System.out.println(option);
+			System.out.println("1. Search ");
+			System.out.println("2. Add");
+			System.out.println("3. Remove");
+			System.out.println("4. Go to main menu");
+			System.out.println("Please, enter your choice!");
+		}
 	}
 
 	public static void bookShip(){ 
@@ -207,8 +217,11 @@ public class NonGUIMain {
 			if(available){
 				try{
 					dbm.bookDock(dockId, date, time, sName, SID);
+				}catch(ForeignKeyException e){
+					System.out.println("Error: The date was incorrect. Please try again!");
+					return;
 				}catch(Exception e){
-					System.out.println("Error: The date or time was incorrect. Please try again!");
+					System.out.println("Error: The time was incorrect. Please try again!");
 					return;
 				}
 				System.out.println("The ship " + sName + " is booked!");
@@ -228,14 +241,6 @@ public class NonGUIMain {
 	}
 	
 	public static void searchStaff(){
-//		System.out.println("Enter staff ID");
-//		String ID = sc.nextLine(); 
-//		try{
-//			checkNotNull(ID);
-//		}catch(NullPointerException e){
-//			System.out.println("No ID was entered, please try again!");
-//			return;
-//		}
 		System.out.println("Enter lastname");
 		String lastName = sc.nextLine();
 		try{
@@ -244,13 +249,15 @@ public class NonGUIMain {
 			System.out.println("No name was entered, please try again!");
 			return;
 		}
-		
-		for(String s : dbm.getPeps(lastName))
-			System.out.println(s);
-//		}
-//		else{
-//			System.out.println("Sorry, no match! Please, add person or try again!");
-//		}
+		List<String> peps = dbm.getPeps(lastName);
+		if(peps.size() != 0){
+			for(String s : peps){
+				System.out.println(s);
+			}
+		}
+		else{
+			System.out.println("Sorry, no match! Please, add person or try again!");
+		}
 	}
 	
 	public static void addStaff(){
@@ -296,7 +303,7 @@ public class NonGUIMain {
 		}
 		try{
 			dbm.addPeps(name, familyName, license, schedule, status); 
-		}catch(Exception e){
+		}catch(ForeignKeyException e){
 			System.out.println("Oops, you've entered something incorrect... Please, try again!");
 			return;
 		}
@@ -320,13 +327,12 @@ public class NonGUIMain {
 			System.out.println("No last name was entered, please try again!");
 			return;
 		}
-		try{
-			dbm.removePeps(PID, lastname);
-		}catch(Exception e){
-			System.out.println("Person not found, couldn't remove, please try again!");
-			return;
-		}
-		System.out.println("Staff removed!");
+			int rows = dbm.removePeps(PID, lastname);
+			if(rows == 1){
+				System.out.println(rows + " person removed!");
+			}
+			else
+				System.out.println("Person not found, couldn't remove, please try again!");
 	}
 	
 	public static void getOkTrucks(){
@@ -361,7 +367,7 @@ public class NonGUIMain {
 		}
 		try{
 			dbm.addTrucks(type, status);
-		}catch(Exception e){
+		}catch(ForeignKeyException e){
 			System.out.println("Oops, you've entered something incorrect... Please, try again!");
 			return;
 		}
@@ -385,12 +391,32 @@ public class NonGUIMain {
 			System.out.println("No truck type was entered, please try again!");
 			return;
 		}
-		dbm.removeTrucks(ID, truckType);
-		System.out.println("Truck removed!");
+		int rows = dbm.removeTrucks(ID, truckType);
+		if(rows == 1){
+			System.out.println(rows + " truck removed!");
+		}
+		else
+			System.out.println("Truck not found, couldn't remove it. Please, try again!");
 	}
 	
 	public static void searchShip(){
-		System.out.println("This option doesn't exist yet, please come back later!");
+		System.out.println("Enter ship name");
+		String name = sc.nextLine();
+		try{
+			checkNotNull(name);
+		}catch(NullPointerException e){
+			System.out.println("No name was entered, please try again!");
+			return;
+		}
+		List<String> ships = dbm.getShip(name);
+		if(ships.size() != 0){
+			for(String s : ships){
+				System.out.println(s);
+			}
+		}
+		else{
+			System.out.println("Sorry, no match! Please, add ship or try again!");
+		}
 	}
 	
 	public static void addShip(){
@@ -420,7 +446,7 @@ public class NonGUIMain {
 		}
 		try{
 			dbm.addShip(name, company, volType);
-		}catch(Exception e){
+		}catch(ForeignKeyException e){
 			System.out.println("Oops, you've entered something incorrect... Please, try again!");
 			return;
 		}
@@ -444,8 +470,12 @@ public class NonGUIMain {
 			System.out.println("No ship name was entered, please try again!");
 			return;
 		}
-		dbm.removeShip(ID, name);
-		System.out.println("Ship removed!");
+		int rows = dbm.removeShip(ID, name);
+		if(rows == 1){
+			System.out.println(rows + " ship removed!");
+		}
+		else
+			System.out.println("No ship found, couldn't remove! Please, try again!");
 	}
 	
 	public static void checkNotNull(String s){

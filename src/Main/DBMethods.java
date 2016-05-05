@@ -5,18 +5,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DBMethods extends Database {
 	public static DBMethods methods = new DBMethods();
 	
-	public Integer getDockByVolumeType(String volType){ //uppdaterad mr
+	public Integer getDockByVolumeType(String volType){ 
 		if(hasConnection()){
 			Statement stm = null;
 			ResultSet rs = null;
 			try{
-				//mr: String sql = "SELECT * FROM Dock WHERE VolumeType='" + volType + "'";
 				String sql = "SELECT * FROM TypeTable WHERE VolumeType='" + volType + "'";
 				stm = con.createStatement();
 				   rs = stm.executeQuery(sql);
@@ -37,7 +35,7 @@ public class DBMethods extends Database {
 	return null;
 	}
 
-	public String getShipVol1(String Name, int ID){ //ingen uppdatering behï¿½vs
+	public String getShipVol1(String Name, int ID){ 
 		if(hasConnection()){
 			String sql = "SELECT VolumeType FROM Ships WHERE Name='" + Name + "' AND ID='" + ID + "';";
 			Statement stm = null;
@@ -48,7 +46,6 @@ public class DBMethods extends Database {
 				while(rs.next()){
 						String VolT = rs.getString("VolumeType");
 						return VolT;
-						//System.out.println(rs.getString("VolumeType"); //getDockByVolumeType(rs.getString("VolymType");
 				   }
 				
 			}catch(SQLException sqle){
@@ -64,10 +61,9 @@ public class DBMethods extends Database {
 		}
 		return null;
 	}
-	public List<String> getOKTrucks(String shipVolume){ //ingen uppdatering behï¿½vs, men det behï¿½vs JOIN fï¿½r truckstatus
-		
+	
+	public List<String> getOKTrucks(String shipVolume){ 		
 		String  truck = getTruckVol(shipVolume);
-		
 		if(hasConnection()){
 			Statement stm = null;
 			ResultSet rs = null;
@@ -98,7 +94,7 @@ public class DBMethods extends Database {
 		return null;
 	}
 
-	public List<String> getReport(String firstDate, String secondDate){ //ny pga uppdatering /mr
+	public List<String> getReport(String firstDate, String secondDate){ 
 
 		if(hasConnection()){
 			Statement stm = null;
@@ -137,20 +133,14 @@ public class DBMethods extends Database {
 				}
 			}
 		}
-
 		return null;	
-
 	}
 	
-	//mr: public void bookDock(String dock_0, String date, String time, String sName, int SID, int PID, String lastName, int PP, String TID, int TP){
-	public void bookDock(int dockId, String date, String time, String sName, int SID) throws Exception{ //uppdaterad mr
+	public void bookDock(int dockId, String date, String time, String sName, int SID) throws Exception{ 
 		if(hasConnection()){
 			Statement stm = null;
-			//mr: ResultSet rs = null;
 			String sql = null;
 			try{
-				//mr:String sql = "INSERT INTO " + dock_0 + " (Date, TimeInterval, ShipName, ShipID, PersonID, Lastname, PersonPrice, TruckID, TruckPrice)" + 
-				//"VALUES ('"+ date +"', '"+ time +"', '" + sName + "', "+ SID +", "+ PID +", '"+ lastName +"', "+ PP +", '"+ TID +"', "+ TP+");";
 				if(time.equals("00-08")){
 					sql = "INSERT INTO Ship_Booked" + " (Date, DockID_00, ShipName, ShipID)" + 
 							"VALUES ('"+ date +"', '"+ dockId +"', '" + sName + "', "+ SID +");";
@@ -159,19 +149,19 @@ public class DBMethods extends Database {
 					sql = "INSERT INTO Ship_Booked" + " (Date, DockID_08, ShipName, ShipID)" + 
 							"VALUES ('"+ date +"', '"+ dockId +"', '" + sName + "', "+ SID +");";
 				}
-				else if(time.equals("16-00")){ //satt tid då vad som helst godkändes /mr
+				else if(time.equals("16-00")){ 
 					sql = "INSERT INTO Ship_Booked" + " (Date, DockID_16, ShipName, ShipID)" + 
 							"VALUES ('"+ date +"', '"+ dockId +"', '" + sName + "', "+ SID +");";
 				}
 				else{
-					throw new Exception();
+					throw new Exception(); //om fel tidsintervall
 				}
 				stm = con.createStatement();
-				stm.executeUpdate(sql); //ï¿½ndrad inget resultset eller Query vid INSERT /mr
+				stm.executeUpdate(sql); 
 				
 			}catch(SQLException sqle){
-				System.err.println(sqle.getMessage());
-				throw new Exception();
+				//System.err.println(sqle.getMessage()); kan förvirra användare
+				throw new ForeignKeyException(); //om fel datumformat
 			}finally{
 				try{
 					stm.close();
@@ -182,7 +172,7 @@ public class DBMethods extends Database {
 		}
 	}
 	
-	public void clearTestBookDock(int dockId, String date, String time, String sName, int SID){ // bara fï¿½r att kunna ï¿½terstï¿½lla efter test av INSERT /mr
+	public void clearTestBookDock(int dockId, String date, String time, String sName, int SID){ //endast test
 		String sql = "DELETE FROM Ship_Booked WHERE ShipID = '" + SID + "'";
 		Statement stm = null;
 		try{
@@ -198,16 +188,19 @@ public class DBMethods extends Database {
 				}
 			}
 	}
-	public void addPeps(String name, String lastName, String license, String schedule, String status){
+	
+	public int addPeps(String name, String lastName, String license, String schedule, String status) throws ForeignKeyException {
+		int rows = -1;
 		if(hasConnection()){
 			Statement stm = null;
 			try{
 				String sql = "INSERT INTO Staff (Name, LastName, License, Schedule, Status)"
 						   + "VALUES ('"+ name +"', '"+ lastName  +"', '"+ license +"', '"+ schedule +"', '"+ status +"');";
 			stm = con.createStatement();
-			stm.executeUpdate(sql);
+			rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
 				System.err.println(sqle.getMessage());
+				throw new ForeignKeyException();
 			}finally{
 				try{
 					stm.close();
@@ -216,16 +209,18 @@ public class DBMethods extends Database {
 				}
 			}
 		}
+		return rows;
 	}
-	public void removePeps(String ID, String lastName){
+	
+	public int removePeps(String ID, String lastName){
+		int rows = -1;
 		if(hasConnection()){
 			Statement stm = null;
 			try{
 				String sql = "DELETE FROM Staff WHERE ID='"+ ID +"' AND LastName='"+ lastName +"';";
 			stm = con.createStatement();
-			stm.executeUpdate(sql);
+			rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
-				
 				System.err.println(sqle.getMessage());
 			}finally{
 				try{
@@ -235,10 +230,10 @@ public class DBMethods extends Database {
 				}
 			}
 		}
+		return rows;
 	}
 	
-public List<String> getPeps(String LastName){
-		
+	public List<String> getPeps(String LastName){
 		if(hasConnection()){
 			Statement stm = null;
 			ResultSet rs = null;
@@ -253,8 +248,7 @@ public List<String> getPeps(String LastName){
 					String LName = rs.getString("LastName");
 					String License = rs.getString("License");
 					String Schedule = rs.getString("Schedule");
-					String Status = rs.getString("Status");
-					
+					String Status = rs.getString("Status");	
 					String line = "ID: " + PID + " Name: " + Name + " LastName: " + LName + " License: " + License + " Schedule: " + Schedule + " Status: " + Status;	
 					array.add(line);
 				}
@@ -273,16 +267,17 @@ public List<String> getPeps(String LastName){
 		return null;
 	}
 	
-	public void addTrucks(String type, String status){
+	public int addTrucks(String type, String status) throws ForeignKeyException{
+		int rows = -1;
 		if(hasConnection()){
 			Statement stm = null;
 			try{
 				String sql = "INSERT INTO Trucks (Type, Status) VALUES ('"+ type +"', '"+ status +"');"; 
 			stm = con.createStatement();
-			stm.executeUpdate(sql);
+			rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
-				
 				System.err.println(sqle.getMessage());
+				throw new ForeignKeyException();
 			}finally{
 				try{
 					stm.close();
@@ -291,14 +286,17 @@ public List<String> getPeps(String LastName){
 				}
 			}
 		}
+		return rows;
 	}
-	public void removeTrucks(String ID, String Type){
+	
+	public int removeTrucks(String ID, String Type){
+		int rows = -1; 
 		if(hasConnection()){
 			Statement stm = null;
 			try{
 				String sql = "DELETE FROM Trucks WHERE ID='"+ ID +"' AND Type='"+ Type +"';";
 				stm = con.createStatement();
-				stm.executeUpdate(sql);
+				rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
 				System.err.println(sqle.getMessage());
 			}finally{
@@ -309,22 +307,26 @@ public List<String> getPeps(String LastName){
 				}
 			}
 		}
+		return rows;
 	}
-public String getShip(String Name, String Company){
-		
+	
+	public List<String> getShip(String Name){ //ändrade till sökning på bara namn och returnerar lista /mr
 		if(hasConnection()){
 			Statement stm = null;
 			ResultSet rs = null;
 			try{
-				String sql = "SELECT * FROM Ships WHERE Name='"+ Name +"' AND Company='"+ Company + "';";
+				String sql = "SELECT * FROM Ships WHERE Name='"+ Name + "';";
 				stm = con.createStatement();
 				rs = stm.executeQuery(sql);
+				List<String> array = new ArrayList<String>();
 				while(rs.next()){
 					String PID = rs.getString("ID");
 					String SName = rs.getString("Name");
 					String SCompany = rs.getString("Company");
-					return "ID: " + PID + " Name: " + SName + " Company: " + SCompany; 
+					String line = "ID: " + PID + " Name: " + SName + " Company: " + SCompany; 
+					array.add(line);
 				}
+				return array;
 			}catch(SQLException sqle){
 				System.err.println(sqle.getMessage());
 			}finally{
@@ -339,13 +341,14 @@ public String getShip(String Name, String Company){
 		return null;
 	}
 
-	public void removeShip(String ID, String name){
+	public int removeShip(String ID, String name){
+		int rows = -1;
 		if(hasConnection()){
 			Statement stm = null;
 			try{
 				String sql = "DELETE FROM Ships WHERE ID='"+ ID +"' AND Name='"+ name +"';";
 				stm = con.createStatement();
-				stm.executeUpdate(sql);
+				rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
 				System.err.println(sqle.getMessage());
 			}finally{
@@ -356,16 +359,20 @@ public String getShip(String Name, String Company){
 				}
 			}
 		}
+		return rows;
 	}
-	public void addShip(String name, String comp, String volType){
+	
+	public int addShip(String name, String comp, String volType) throws ForeignKeyException{
+		int rows = -1;
 		if(hasConnection()){
 			Statement stm = null;
 			try{
 				String sql = "INSERT INTO Ships (Name, Company, VolumeType) VALUES ('"+ name +"', '"+ comp +"', '"+ volType +"');";
 				stm = con.createStatement();
-				stm.executeUpdate(sql);
+				rows = stm.executeUpdate(sql);
 			}catch(SQLException sqle){
 				System.err.print(sqle.getMessage());
+				throw new ForeignKeyException();
 			}finally{
 				try{
 					stm.close();
@@ -374,9 +381,10 @@ public String getShip(String Name, String Company){
 				}
 			}
 		}
+		return rows;
 	}
 	
-	public String getTruckVol(String volume){ //nï¿½e... varfï¿½r? Finns i TypeTable /mr
+	public String getTruckVol(String volume){ 
 		
 		switch(volume){
 			case "A005":

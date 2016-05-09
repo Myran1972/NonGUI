@@ -100,7 +100,7 @@ public class DBMethods extends Database {
 			Statement stm = null;
 			ResultSet rs = null;
 			try{
-				String sql = "SELECT * FROM Ship_Booked WHERE Date BETWEEN '" + firstDate + "' AND '" + secondDate + "';";
+				String sql = "SELECT * FROM Ship_Booked WHERE Date BETWEEN '" + firstDate + "' AND '" + secondDate + "' ORDER BY Date, DockID_00 DESC, DockID_08 DESC, DockID_16 DESC;";
 				stm = con.createStatement();
 				rs = stm.executeQuery(sql);
 				List<String> array = new ArrayList<String>();
